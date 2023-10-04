@@ -39,7 +39,7 @@ export const ExpenseComp = () => {
     const newCategory = e.target.elements[2].value;
     const newDate = e.target.elements[3].value;
 
-    if (!newItem || isNaN(newAmount)) {
+    if (!newItem || isNaN(newAmount) || !newCategory || !newDate) {
       return;
     }
 
@@ -65,42 +65,47 @@ export const ExpenseComp = () => {
   }
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const result = await fetchDataFromFirestore(dispatch, user.email);
-        if (result.length > 0) {
-          // Assuming result[0] contains the data you need
-          const item = result[0];
+    if (typeof window !== "undefined") {
+      async function fetchData() {
+        try {
+          const result = await fetchDataFromFirestore(dispatch, user.email);
+          if (result.length > 0) {
+            // Assuming result[0] contains the data you need
+            const item = result[0];
 
-          setExpense(item.expenses.spends || []);
-          setAmount(item.expenses.cost || []);
-          setCategory(item.expenses.category || []);
-          setDate(item.expenses.date || []);
-          setTotal(item.total || 0);
-          expense.map((item, idx) => {
-            categoryTotal.category[idx] += amount[idx];
-          });
+            setExpense(item.expenses.spends || []);
+            setAmount(item.expenses.cost || []);
+            setCategory(item.expenses.category || []);
+            setDate(item.expenses.date || []);
+            setTotal(item.total || 0);
+            expense.map((item, idx) => {
+              categoryTotal.category[idx] += amount[idx];
+            });
+          }
+
+        } catch (error) {
+
         }
-
-      } catch (error) {
 
       }
 
+
+
+
+      fetchData();
     }
-
-
-
-    fetchData();
   }, [user, amount, dispatch, expense]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
 
-    dispatch(addData(expense, amount, category, date, total));
-    if (user) {
+      dispatch(addData(expense, amount, category, date, total));
+      if (user) {
 
-      if (expense.length != 0) {
-        setUserName(user.displayName);
-        writeExpenses(expense, amount, category, date, total, user.email);
+        if (expense.length != 0) {
+          setUserName(user.displayName);
+          writeExpenses(expense, amount, category, date, total, user.email);
+        }
       }
     }
   }, [expense, amount, category, date, dispatch, total, user]);
