@@ -64,7 +64,7 @@ const LineChart = (props) => {
 
     return (
         <div className='line-graph-comp' >
-            <CanvasJSChart options={options} />
+            {CanvasJSChart && <CanvasJSChart options={options} />}
         </div>
     );
 };
