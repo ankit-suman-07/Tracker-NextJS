@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import "../css/PieChart.css";
 import Demo from './LineChart';
